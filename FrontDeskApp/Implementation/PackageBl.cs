@@ -15,10 +15,10 @@ namespace FrontDeskApp.Implementation
             _context = context;
         }
 
-        public List<PackageView> SearchPackages(int intCustomerId)
+        public List<PackageView> SearchPackages(int intCustomerId, int intFacilityId)
         {
             return _context.Packages
-                           .Where(p => p.intCustomerId == intCustomerId)
+                           .Where(p => p.intCustomerId == intCustomerId && p.intFacilityId == intFacilityId)
                            .Select(s => new PackageView
                            {
                                intPackageId = s.intPackageId,
@@ -26,11 +26,10 @@ namespace FrontDeskApp.Implementation
                                intPackageCategoryId = s.intCategoryId,
                                strPackageName = (s.Category.strCategory.ToUpper() == "SMALL" ? "S" : s.Category.strCategory.ToUpper() == "MEDIUM" ? "M" : "L") + "-" + s.intPackageId.ToString(),
                                strCategory = s.Category.strCategory,
-                               strRetrieved = s.ysnRetrieved == false ? "Stored" : "Retrieved",
-                               dtmDate = s.dtmDate,
-                               ysnRetrieved = s.ysnRetrieved
+                               strStatus = s.strStatus,
+                               dtmDate = s.dtmDate                               
                            })
-                           .OrderBy(o => o.ysnRetrieved).ThenByDescending(n => n.dtmDate)
+                           .OrderBy(o => o.dtmDate)
                            .ToList();
         }
     }

@@ -22,7 +22,14 @@
                 new Category { strCategory = "Large", intLimit = 12 }
             };
 
+            var facilities = new List<Facility> {
+                new Facility { strFacilityName = "Facility-1" },
+                new Facility { strFacilityName = "Facility-2" },
+                new Facility { strFacilityName = "Facility-3" }
+            };
+
             context.Categories.AddRange(categories);
+            context.Facilities.AddRange(facilities);
             context.SaveChanges();
         }
     }

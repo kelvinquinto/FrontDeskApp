@@ -4,8 +4,8 @@ using FrontDeskApp.Repositories;
 
 namespace FrontDeskApp.Interface
 {
-    public interface ICategory : IRepository<Category>
+    public interface IFacility : IRepository<Facility>
     {
-        List<AvailableSlotView> GetAvailableSlots(int intFacilityId);
+        List<FacilityView> SearchFacilities();
     }
 }

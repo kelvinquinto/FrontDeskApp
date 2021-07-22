@@ -70,14 +70,26 @@
     </Compile>
     <Compile Include="Implementation\CategoryBl.cs" />
     <Compile Include="Implementation\CustomerBl.cs" />
+    <Compile Include="Implementation\FacilityBl.cs" />
     <Compile Include="Implementation\PackageBl.cs" />
     <Compile Include="Interface\ICategory.cs" />
     <Compile Include="Interface\ICustomer.cs" />
+    <Compile Include="Interface\IFacility.cs" />
     <Compile Include="Interface\IPackage.cs" />
+    <Compile Include="Migrations\202107211401076_InitializeTables.cs" />
+    <Compile Include="Migrations\202107211401076_InitializeTables.designer.cs">
+      <DependentUpon>202107211401076_InitializeTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107211405318_InitializeTables1.cs" />
+    <Compile Include="Migrations\202107211405318_InitializeTables1.designer.cs">
+      <DependentUpon>202107211405318_InitializeTables1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AvailableSlotView.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Facility.cs" />
+    <Compile Include="Models\FacilityView.cs" />
     <Compile Include="Models\FrontDeskContext.cs" />
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\PackageView.cs" />
@@ -87,6 +99,12 @@
     <Compile Include="Repositories\Repository.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107211401076_InitializeTables.resx">
+      <DependentUpon>202107211401076_InitializeTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107211405318_InitializeTables1.resx">
+      <DependentUpon>202107211405318_InitializeTables1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

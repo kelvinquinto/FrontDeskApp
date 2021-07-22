@@ -18,7 +18,9 @@ namespace FrontDeskApp
         private ICustomer _customerSvc;
         private ICategory _categorySvc;
         private IPackage _packageSvc;
+        private IFacility _facilitySvc;
 
+        #region Constructor
         public Form1()
         {
             InitializeComponent();
@@ -26,12 +28,17 @@ namespace FrontDeskApp
             _customerSvc = new CustomerBl(new FrontDeskContext());
             _categorySvc = new CategoryBl(new FrontDeskContext());
             _packageSvc = new PackageBl(new FrontDeskContext());
+            _facilitySvc = new FacilityBl(new FrontDeskContext());
         }
+        #endregion
 
+        #region Events
         private void Form1_Load(object sender, EventArgs e)
         {
             this.PopulateCustomerGrid();
             this.PopulateCategory();
+            this.PopulateFacility();
+            this.PopulateFacilityGrid();
             this.GetAvailableSlots();
         }
 
@@ -147,10 +154,13 @@ namespace FrontDeskApp
         {
             try
             {
+                bool ysnStore = (sender as Button).Text == "Store Package";
+
                 if (dgvCustomer.CurrentRow.Index != -1)
                 {
                     int? intCustomerId = (int?)dgvCustomer.CurrentRow.Cells["intCustomerId"].Value;
                     int? intCategoryId = (int?)cmbCategory.SelectedValue;
+                    int? intFacilityId = (int?)cmbFacility.SelectedValue;
                     string strCategory = cmbCategory.Text;
                     int intSmallAvailable = Convert.ToInt32(txtSmall.Text);
                     int intMediumAvailable = Convert.ToInt32(txtMedium.Text);
@@ -198,7 +208,8 @@ namespace FrontDeskApp
                     {
                         intCustomerId = (int)intCustomerId,
                         intCategoryId = (int)intCategoryId,
-                        ysnRetrieved = false,
+                        intFacilityId = (int)intFacilityId,
+                        strStatus = ysnStore ? "Stored" : "Reserved",
                         dtmDate = DateTime.Now
                     };
 
@@ -210,6 +221,7 @@ namespace FrontDeskApp
                     this.EnableFields(false);
                     this.PopulatePackageGrid();
                     this.GetAvailableSlots();
+                    this.PopulateFacilityGrid();
                     MessageBox.Show("Package successfully stored.");
                 }
             }
@@ -233,7 +245,7 @@ namespace FrontDeskApp
 
                         if (package != null)
                         {
-                            package.ysnRetrieved = true;
+                            package.strStatus = "Retrieved";
                             package.dtmDate = DateTime.Now;
                             
                             _packageSvc.Save();
@@ -243,6 +255,7 @@ namespace FrontDeskApp
                             this.EnableFields(false);
                             this.PopulatePackageGrid();
                             this.GetAvailableSlots();
+                            this.PopulateFacilityGrid();
                             MessageBox.Show("Package Retrieved!");
                         }
                     }
@@ -276,7 +289,9 @@ namespace FrontDeskApp
                 btnRetrieve.Enabled = true;
             }
         }
+        #endregion
 
+        #region Methods
         private void ClearFields()
         {
             txtFirstName.Text = string.Empty;
@@ -290,7 +305,9 @@ namespace FrontDeskApp
             btnUpdate.Enabled = ysnEnable;
             btnDelete.Enabled = ysnEnable;
             btnStore.Enabled = ysnEnable;
+            btnReserve.Enabled = ysnEnable;
             cmbCategory.Enabled = ysnEnable;
+            cmbFacility.Enabled = ysnEnable;
         }
 
         private void PopulateCustomerGrid()
@@ -304,9 +321,13 @@ namespace FrontDeskApp
             if (dgvCustomer.CurrentRow.Index != -1)
             {
                 int intCustomerId = (int)dgvCustomer.CurrentRow.Cells["intCustomerId"].Value;
+                int intFacilityId = cmbFacility.SelectedValue.GetType() != typeof(Int32) ? 0 : (int)cmbFacility.SelectedValue;
+
+                if (intFacilityId == 0)
+                    return;
 
                 dgvPackage.AutoGenerateColumns = false;
-                dgvPackage.DataSource = _packageSvc.SearchPackages(intCustomerId);
+                dgvPackage.DataSource = _packageSvc.SearchPackages(intCustomerId, intFacilityId);
             }
         }
 
@@ -317,11 +338,29 @@ namespace FrontDeskApp
             cmbCategory.ValueMember = "intCategoryId";
         }
 
+        private void PopulateFacility()
+        {
+            cmbFacility.DataSource = _facilitySvc.GetAll();
+            cmbFacility.DisplayMember = "strFacilityName";
+            cmbFacility.ValueMember = "intFacilityId";
+        }
+
+        private void PopulateFacilityGrid()
+        {
+            dgvFacility.AutoGenerateColumns = false;
+            dgvFacility.DataSource = _facilitySvc.SearchFacilities();
+        }
+
         public void GetAvailableSlots()
         {
             try
             {
-                List<AvailableSlotView> slots = _categorySvc.GetAvailableSlots();
+                int intFacilityId = cmbFacility.SelectedValue.GetType() != typeof(Int32) ? 0 : (int)cmbFacility.SelectedValue;
+
+                if (intFacilityId == 0)
+                    return;
+
+                List<AvailableSlotView> slots = _categorySvc.GetAvailableSlots(intFacilityId);
 
                 if (slots != null && slots.Count() > 0)
                 {
@@ -346,6 +385,13 @@ namespace FrontDeskApp
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        #endregion
+
+        private void cmbFacility_SelectedValueChanged(object sender, EventArgs e)
+        {
+            this.GetAvailableSlots();
+            this.PopulatePackageGrid();
         }
     }
 }

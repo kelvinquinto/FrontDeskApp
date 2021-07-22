@@ -6,6 +6,6 @@ namespace FrontDeskApp.Interface
 {
     public interface IPackage : IRepository<Package>
     {
-        List<PackageView> SearchPackages(int intCustomerId);
+        List<PackageView> SearchPackages(int intCustomerId, int intFacilityId);
     }
 }

@@ -8,5 +8,6 @@ namespace FrontDeskApp.Models
         public DbSet<Category> Categories { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Package> Packages { get; set; }
+        public DbSet<Facility> Facilities { get; set; }
     }       
 }

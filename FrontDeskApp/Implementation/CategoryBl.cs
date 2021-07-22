@@ -15,11 +15,11 @@ namespace FrontDeskApp.Implementation
             _context = context;
         }
 
-        public List<AvailableSlotView> GetAvailableSlots()
+        public List<AvailableSlotView> GetAvailableSlots(int intFacilityId)
         {
             var categories = this.GetAll();
             var packages = _context.Packages
-                                   .Where(w => w.ysnRetrieved == false)
+                                   .Where(w => (w.strStatus == "Stored" || w.strStatus == "Reserved") && w.intFacilityId == intFacilityId)
                                    .GroupBy(g => g.intCategoryId)
                                    .Select(s => new
                                    {

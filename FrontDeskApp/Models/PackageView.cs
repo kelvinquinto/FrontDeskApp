@@ -9,7 +9,7 @@ namespace FrontDeskApp.Models
         public int intPackageCategoryId { get; set; }
         public string strPackageName { get; set; }
         public string strCategory { get; set; }
-        public string strRetrieved { get; set; }
+        public string strStatus { get; set; }
         public DateTime dtmDate { get; set; }
         public bool ysnRetrieved { get; set; }
     }
